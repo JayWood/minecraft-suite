@@ -1,0 +1,17 @@
+{
+  "generator-plugin-wp": {
+    "name": "Minecraft Suite",
+    "homepage": "http://plugish.com",
+    "description": "A collection of minecraft tid-bits, widgets, and scripts that are intended for use on a Minecraft WordPress website.",
+    "version": "0.1.0",
+    "author": "phyrax",
+    "authoremail": "jjwood2004@gmail.com",
+    "authorurl": "http://plugish.com",
+    "license": "GPLv2",
+    "slug": "minecraft-suite",
+    "classname": "Minecraft_Suite",
+    "classprefix": "MS_",
+    "prefix": "minecraft_suite",
+    "year": 2015
+  }
+}

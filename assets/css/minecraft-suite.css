@@ -1,0 +1,22 @@
+/**
+ * Minecraft Suite
+ * http://plugish.com
+ *
+ * Copyright (c) 2015 phyrax
+ * Licensed under the GPLv2+ license.
+ */
+/*! Variables */
+/*! Minecraft Server Status */
+.wp-admin .widget.minecraft_server_status input {
+  width: 100%; }
+
+.wp-admin .widget.minecraft_server_status .server-address {
+  width: 80%; }
+
+.widget-area .minecraft-suite-server-status span.online {
+  color: #0F0; }
+
+.widget-area .minecraft-suite-server-status span.offline {
+  color: #F00; }
+
+/*# sourceMappingURL=minecraft-suite.css.map */

@@ -1,0 +1,23 @@
+{
+  "name": "minecraft-suite",
+  "title": "Minecraft Suite",
+  "version": "0.1.0",
+  "description": "A collection of minecraft tid-bits, widgets, and scripts that are intended for use on a Minecraft WordPress website.",
+  "author": {
+    "name": "phyrax",
+    "url": "http://plugish.com"
+  },
+  "license": "GPLv2",
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-banner": "^0.4.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-cssmin": "^0.12.3",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "latest",
+    "grunt-sass": "^1.0.0",
+    "grunt-wp-i18n": "latest",
+    "load-grunt-tasks": "latest"
+  }
+}

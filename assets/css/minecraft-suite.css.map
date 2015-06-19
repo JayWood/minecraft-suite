@@ -1,0 +1,12 @@
+{
+	"version": 3,
+	"file": "minecraft-suite.css",
+	"sources": [
+		"sass/styles.scss",
+		"sass/inc/variables.scss",
+		"sass/widgets/server_status.scss"
+	],
+	"sourcesContent": [],
+	"mappings": "AAAA;;;;;;GAMG;ACNH,gBAAgB;ACAhB,8BAA8B;AAI3B,SAAS,CAAC,OAAO,AAAA,wBAAwB,CAAC,KAAK,CAA1C;EACJ,KAAK,EAAE,IAAK,GADP;;AAGN,SAAS,CAAC,OAAO,AAAA,wBAAwB,CAAC,eAAe,CAA1C;EACd,KAAK,EAAE,GAAI,GADI;;AAUf,YAAY,CAAC,8BAA8B,CAAC,IAAI,AAAA,OAAO,CAA/C;EACR,KAAK,EDfW,IAAI,GCcX;;AAGT,YAAY,CAAC,8BAA8B,CAAC,IAAI,AAAA,QAAQ,CAA/C;EACT,KAAK,EDjBY,IAAI,GCgBX",
+	"names": []
+}

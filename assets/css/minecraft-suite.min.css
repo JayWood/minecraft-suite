@@ -1,0 +1,9 @@
+/**
+ * Minecraft Suite - v0.1.0 - 2015-06-18
+ * http://plugish.com
+ *
+ * Copyright (c) 2015;
+ * Licensed GPLv2+
+ */
+
+/*! Variables *//*! Minecraft Server Status */.wp-admin .widget.minecraft_server_status input{width:100%}.wp-admin .widget.minecraft_server_status .server-address{width:80%}.widget-area .minecraft-suite-server-status span.online{color:#0F0}.widget-area .minecraft-suite-server-status span.offline{color:red}

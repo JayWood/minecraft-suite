@@ -1,0 +1,18 @@
+{
+  "name": "minecraft-suite",
+  "description": "A collection of minecraft tid-bits, widgets, and scripts that are intended for use on a Minecraft WordPress website.",
+  "license": "GPLv2",
+  "authors": [
+    "phyrax"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}

@@ -1,0 +1,26 @@
+/*! Minecraft Server Status */
+.wp-admin{
+	.widget{
+		&.minecraft_server_status{
+			input{
+				width: 100%;
+			}
+			.server-address{
+				width: 80%;
+			}
+		}
+	}
+}
+
+.widget-area {
+	.minecraft-suite-server-status {
+		span {
+			&.online {
+				color: $connection_online;
+			}
+			&.offline {
+				color: $connection_offline;
+			}
+		}
+	}
+}
