@@ -156,7 +156,8 @@ class Minecraft_Suite {
 		// Attach other plugin classes to the base plugin class.
 		// $this->admin = new MS_Admin( $this );
 
-		$this->server_status = new MS_Server_Status();
+		$this->server_status = new MS_Server_Status( $this );
+		$this->applications = new MS_Applications( $this );
 	}
 
 	/**

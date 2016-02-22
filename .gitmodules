@@ -1,3 +1,6 @@
 [submodule "includes/vendor/PHP-Minecraft-Query"]
 	path = includes/vendor/PHP-Minecraft-Query
 	url = git@github.com:xPaw/PHP-Minecraft-Query.git
+[submodule "includes/vendor/CPT_Core"]
+	path = includes/vendor/CPT_Core
+	url = git@github.com:WebDevStudios/CPT_Core.git
