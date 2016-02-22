@@ -14,6 +14,8 @@ class MS_Applications extends CPT_Core {
 
 		$this->plugin = $plugin;
 
+		add_shortcode( 'ms-application-form', array( $this, 'ms_shortcode_output' ) );
+
 		parent::__construct(
 			array(
 				__( 'Application', 'ms' ),
@@ -24,5 +26,11 @@ class MS_Applications extends CPT_Core {
 				'supports' => array( 'title' ),
 			)
 		);
+	}
+
+	public function ms_shortcode_output() {
+		ob_start();
+		$this->plugin->views( 'application-form' );
+		return ob_get_clean();
 	}
 }

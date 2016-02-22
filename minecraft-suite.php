@@ -290,6 +290,14 @@ class Minecraft_Suite {
 		return false;
 	}
 
+	public static function views( $filename ) {
+		$file = self::dir( 'views/'. $filename .'.php' );
+		if ( file_exists( $file ) ) {
+			return include_once( $file );
+		}
+		return false;
+	}
+
 	/**
 	 * This plugin's directory
 	 *
