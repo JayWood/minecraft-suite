@@ -28,32 +28,6 @@ module.exports = function (grunt) {
                     debounceDelay: 500
                 }
             },
-            php: {
-                files: [
-                    '**/*.php',
-                    '!vendor/**.*.php'
-                ],
-                tasks: ['php'],
-                options: {
-                    spawn: false,
-                    debounceDelay: 500
-                }
-            }
-        },
-        makepot: {
-            dist: {
-                options: {
-                    domainPath: '/languages/',
-                    potFilename: pkg.name + '.pot',
-                    type: 'wp-plugin'
-                }
-            }
-        },
-        addtextdomain: {
-            dist: {
-                options: { textdomain: pkg.name },
-                target: { files: { src: ['**/*.php'] } }
-            }
         },
         jshint: {
             all: [
@@ -113,14 +87,9 @@ module.exports = function (grunt) {
         'cssmin',
         'usebanner'
     ]);
-    grunt.registerTask('php', [
-        'addtextdomain',
-        'makepot'
-    ]);
     grunt.registerTask('default', [
         'styles',
         'scripts',
-        'php'
     ]);
     grunt.util.linefeed = '\n';
 };

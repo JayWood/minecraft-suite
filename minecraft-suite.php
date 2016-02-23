@@ -175,14 +175,73 @@ class Minecraft_Suite {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+
+		add_action( 'wp_ajax_nopriv_minecraft-server-suite', array( $this, 'handle_ajax' ) );
+		add_action( 'wp_ajax_minecraft-server-suite', array( $this, 'handle_ajax' ) );
+	}
+
+	public function handle_ajax() {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'mcs-nonce' ) ) {
+			wp_send_json_error( __( 'Internal Server Error', 'ms' ) );
+		}
+
+		$age = absint( $_POST['age'] );
+		$username = esc_attr( $_POST['ms-username'] );
+		$email = sanitize_email( $_POST['email'] );
+
+		if ( empty( $email ) ) {
+			wp_send_json_error( __( 'Please enter a valid email address', 'ms' ) );
+		}
+
+		if ( empty( $age ) || empty( $email ) || empty( $username ) ) {
+			wp_send_json_error( __( 'All fields are required.', 'ms' ) );
+		}
+
+
+		if ( $status = $this->user_has_application( $username ) ) {
+			wp_send_json_error( sprintf( __( 'You already have an active application with a status of %s', 'ms' ), $status ) );
+		}
+
+		wp_send_json_success( 'Passed all tests' );
+
+
+	}
+
+	public function user_has_application( $username ) {
+		$post_query = get_posts( array(
+			'post_type' => 'mc_applications',
+			'post_status' => 'any',
+			'posts_per_page' => 1,
+			'meta_query' => array(
+				array(
+					'key' => 'mc-username',
+					'value' => $username,
+				),
+			),
+			'fields' => 'ids',
+		) );
+
+		$status = false;
+		if ( ! empty( $post_query ) ) {
+			$id = array_shift( $post_query );
+			$status = get_post_meta( $id, 'application_status', true );
+		}
+
+		return $status;
 	}
 
 	public function enqueue_scripts() {
+
+		wp_localize_script( 'minecraft_suite', 'mc_l10n', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		) );
+
 		wp_enqueue_style( 'minecraft_suite' );
+		wp_enqueue_script( 'minecraft_suite' );
 	}
 
 	public function admin_scripts() {
-		wp_enqueue_style( 'minecraft_suite' );
+//		wp_enqueue_style( 'minecraft_suite' );
 	}
 
 	/**
@@ -214,7 +273,8 @@ class Minecraft_Suite {
 	public function init() {
 		if ( $this->check_requirements() ) {
 			load_plugin_textdomain( 'minecraft-suite', false, dirname( $this->basename ) . '/languages/' );
-			wp_register_style( 'minecraft_suite', $this->url( "assets/css/minecraft-suite{$this->min}.css"), false, self::VERSION );
+			wp_register_style( 'minecraft_suite', $this->url( "assets/css/minecraft-suite{$this->min}.css" ), false, self::VERSION );
+			wp_register_script( 'minecraft_suite', $this->url( "assets/js/minecraft-suite{$this->min}.js" ), array( 'jquery' ), self::VERSION, true );
 		}
 	}
 

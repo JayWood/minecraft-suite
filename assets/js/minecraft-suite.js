@@ -1,10 +1,10 @@
 /**
- * Minecraft Suite
+ * Minecraft Suite - v0.1.0 - 2016-02-22
  * http://plugish.com
  *
- * Licensed under the GPLv2+ license.
+ * Copyright (c) 2016;
+ * Licensed GPLv2+
  */
-
 window.Minecraft_Suite = window.Minecraft_Suite || {};
 
 ( function( window, document, $, that, undefined ) {
