@@ -180,6 +180,21 @@ class Minecraft_Suite {
 		add_action( 'wp_ajax_minecraft-server-suite', array( $this, 'handle_ajax' ) );
 	}
 
+	public function _get_available_servers() {
+		return array(
+			'inf-reg'  => 'Infinity Regular',
+			'inf-hard' => 'Infinity Expert',
+		);
+	}
+
+	public static function get_servers() {
+		return self::_get_available_servers();
+	}
+
+	public function get_minimum_age() {
+		return 12;
+	}
+
 	public function handle_ajax() {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'mcs-nonce' ) ) {
 			wp_send_json_error( __( 'Internal Server Error', 'ms' ) );
@@ -188,28 +203,58 @@ class Minecraft_Suite {
 		$age = absint( $_POST['age'] );
 		$username = esc_attr( $_POST['ms-username'] );
 		$email = sanitize_email( $_POST['email'] );
+		$reason = wp_kses_post( $_POST['reason'] );
+		$server = esc_attr( $_POST['which-server'] );
+
+		if ( ! array_key_exists( $server, $this->_get_available_servers() ) ) {
+			wp_send_json_error( __( 'The specified server does not exist, please select a valid server.', 'ms' ) );
+		} else {
+			$server = $this->_get_available_servers()[ $server ];
+		}
+
+		if ( $age > 100 ) {
+			wp_send_json_error( __( 'You are WAY too old to be playing Minecraft!!!', 'ms' ) );
+		}
+
+		if ( $age < $this->get_minimum_age() ) {
+			wp_send_json_error( __( 'You do not meet the minimum age requirements to play on this server.', 'ms' ) );
+		}
 
 		if ( empty( $email ) ) {
 			wp_send_json_error( __( 'Please enter a valid email address', 'ms' ) );
 		}
 
-		if ( empty( $age ) || empty( $email ) || empty( $username ) ) {
+		if ( empty( $age ) || empty( $email ) || empty( $username ) || empty( $reason ) ) {
 			wp_send_json_error( __( 'All fields are required.', 'ms' ) );
 		}
 
 
-		if ( $status = $this->user_has_application( $username ) ) {
-			wp_send_json_error( sprintf( __( 'You already have an active application with a status of %s', 'ms' ), $status ) );
+		if ( false !== $status = $this->user_has_application( $username ) ) {
+			wp_send_json_error( sprintf( __( 'You already have an active application with a status of [ %s ]', 'ms' ), $status ) );
 		}
 
-		wp_send_json_success( 'Passed all tests' );
+		$insert_results = wp_insert_post( array(
+			'post_type' => 'mc-applications',
+			'post_status' => 'pending',
+			'post_title' => sprintf( __( 'Whitelist Application for: %s', 'ms' ), $username ),
+			'post_content' => $reason,
+		), true );
 
+		if ( ! is_wp_error( $insert_results ) && ! empty( $insert_results ) ) {
+			foreach ( array( 'age' => $age, 'mc-username' => $username, 'server' => $server ) as $k => $v ) {
+				update_post_meta( $insert_results, $k, $v );
+			}
+
+			wp_send_json_success( __( 'Success! - Your application is now pending approval by a member of the team. You will receive an email when your application has been reviewed along with our decision.', 'ms' ) );
+		}
+
+		wp_send_json_error( __( 'An unspecified error occurred, please contact an admin, or try again later', 'ms' ) );
 
 	}
 
 	public function user_has_application( $username ) {
 		$post_query = get_posts( array(
-			'post_type' => 'mc_applications',
+			'post_type' => 'mc-applications',
 			'post_status' => 'any',
 			'posts_per_page' => 1,
 			'meta_query' => array(
@@ -221,10 +266,11 @@ class Minecraft_Suite {
 			'fields' => 'ids',
 		) );
 
+		error_log( print_r( $post_query, 1 ) );
+
 		$status = false;
 		if ( ! empty( $post_query ) ) {
-			$id = array_shift( $post_query );
-			$status = get_post_meta( $id, 'application_status', true );
+			$status = get_post_status( $post_query[0] );
 		}
 
 		return $status;

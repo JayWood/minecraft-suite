@@ -23,7 +23,7 @@ class MS_Applications extends CPT_Core {
 				'mc-applications',
 			),
 			array(
-				'supports' => array( 'title' ),
+				'supports' => array( 'title', 'editor', 'custom-fields' ),
 			)
 		);
 	}
