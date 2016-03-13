@@ -22,7 +22,7 @@ class MS_Whitelist_Feed {
 	}
 
 	public function display_whitelist() {
-		if ( ! isset( $_GET['mcss-whitelist-feed'] ) ) {
+		if ( ! isset( $_GET['mc-whitelist-feed'] ) ) {
 			return;
 		}
 
