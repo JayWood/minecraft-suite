@@ -116,6 +116,16 @@ class Minecraft_Suite {
 	protected $min = '.min';
 
 	/**
+	 * @var MS_Cpts
+	 */
+	protected $cpts;
+
+	/**
+	 * @var MS_Whitelist_Feed
+	 */
+	protected $whitelist_feed;
+
+	/**
 	 * Creates or returns an instance of this class.
 	 *
 	 * @since  0.1.0
@@ -141,7 +151,6 @@ class Minecraft_Suite {
 		$this->path     = plugin_dir_path( __FILE__ );
 
 		$this->plugin_classes();
-		$this->hooks();
 
 		$this->min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	}
@@ -156,8 +165,9 @@ class Minecraft_Suite {
 		// Attach other plugin classes to the base plugin class.
 		// $this->admin = new MS_Admin( $this );
 
+		$this->cpts = new MS_Cpts( $this->dir( 'includes/cpt_config' ), $this->dir( 'includes/vendor' ) );
 		$this->server_status = new MS_Server_Status( $this );
-		$this->applications = new MS_Applications( $this );
+		$this->whitelist_feed = new MS_Whitelist_Feed( $this );
 	}
 
 	/**
@@ -167,9 +177,6 @@ class Minecraft_Suite {
 	 * @return null
 	 */
 	public function hooks() {
-		// Not needed yet
-//		register_activation_hook( __FILE__, array( $this, '_activate' ) );
-//		register_deactivation_hook( __FILE__, array( $this, '_deactivate' ) );
 
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -178,6 +185,9 @@ class Minecraft_Suite {
 
 		add_action( 'wp_ajax_nopriv_minecraft-server-suite', array( $this, 'handle_ajax' ) );
 		add_action( 'wp_ajax_minecraft-server-suite', array( $this, 'handle_ajax' ) );
+
+		$this->cpts->hooks();
+		$this->whitelist_feed->hooks();
 	}
 
 	public function _get_available_servers() {
@@ -241,7 +251,7 @@ class Minecraft_Suite {
 		), true );
 
 		if ( ! is_wp_error( $insert_results ) && ! empty( $insert_results ) ) {
-			foreach ( array( 'age' => $age, 'mc-username' => $username, 'server' => $server ) as $k => $v ) {
+			foreach ( array( 'age' => $age, 'mc-username' => $username, 'server' => $server, 'email' => $email ) as $k => $v ) {
 				update_post_meta( $insert_results, $k, $v );
 			}
 
@@ -443,4 +453,4 @@ function minecraft_suite() {
 }
 
 // Kick it off
-minecraft_suite();
+add_action( 'plugins_loaded', array( minecraft_suite(), 'hooks' ) );

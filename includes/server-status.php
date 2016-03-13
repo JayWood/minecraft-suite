@@ -5,8 +5,8 @@
  * @package Minecraft Suite
  */
 
-require __DIR__ . '/vendor/PHP-Minecraft-Query/src/MinecraftPing.php';
-require __DIR__ . '/vendor/PHP-Minecraft-Query/src/MinecraftPingException.php';
+require_once 'vendor/MC_Query/MinecraftPing.php';
+require_once 'vendor/MC_Query/MinecraftPingException.php';
 
 use xPaw\MinecraftPing;
 use xPaw\MinecraftPingException;

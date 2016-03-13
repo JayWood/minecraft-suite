@@ -4,3 +4,6 @@
 [submodule "includes/vendor/CPT_Core"]
 	path = includes/vendor/CPT_Core
 	url = git@github.com:WebDevStudios/CPT_Core.git
+[submodule "includes/vendor/Taxonomy_Core"]
+	path = includes/vendor/Taxonomy_Core
+	url = git@github.com:WebDevStudios/Taxonomy_Core.git
