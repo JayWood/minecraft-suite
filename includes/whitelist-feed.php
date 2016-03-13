@@ -22,23 +22,47 @@ class MS_Whitelist_Feed {
 	}
 
 	public function display_whitelist() {
-		if ( ! isset( $_GET['ms_whitelist_manager'] ) ) {
+		if ( ! isset( $_GET['mcss-whitelist-feed'] ) ) {
 			return;
 		}
 
 		$query_args = array(
 			'post_type'      => 'mc-applications',
-			'post_status'    => 'draft',
+			'post_status'    => 'any',
 			'posts_per_page' => -1,
+			'fields'         => 'ids',
 			'meta_query'     => array(
 				array(
-					'key'     => 'ms-username',
+					'key'     => 'mc-username',
 					'compare' => 'EXISTS',
 				),
-			)
+			),
 		);
 
-		wp_send_json_success( array( 'yep' ) );
-	}
+		if ( isset( $_GET['server'] ) ) {
+			$server = esc_attr( $_GET['server'] );
+			if ( ! term_exists( 'server', $server ) ) {
+				wp_send_json_error( array( 'msg' => sprintf( __( "Requested server '%s' does not exist.", 'minecraft-suite' ), $server ) ) );
+			}
 
+			$query_args['server'] = $server;
+		}
+
+		$query_args           = apply_filters( 'mc_server_suite_whitelist_query', $query_args );
+		$white_listed_players = get_posts( $query_args );
+
+		if ( empty( $white_listed_players ) ) {
+			wp_send_json_success( array() );
+		}
+
+		$players = array();
+		foreach ( $white_listed_players as $application_id ) {
+			$player_name = get_post_meta( $application_id, 'mc-username', true );
+			if ( ! empty( $player_name ) ) {
+				$players[] = $player_name;
+			}
+		}
+
+		wp_send_json_success( $players );
+	}
 }
