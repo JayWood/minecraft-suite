@@ -76,7 +76,6 @@ class MS_Cpts {
 			require_once( $require_dir . '/Taxonomy_Core/Taxonomy_Core.php' );
 			// Taxonomies directory
 			$tax_dir = $dir . '/taxonomies/';
-			error_log( print_r( $tax_dir, 1 ) );
 			foreach ( glob( $tax_dir . '*.php' ) as $filename ) {
 				$this->load_file( $tax_dir, $filename );
 			}

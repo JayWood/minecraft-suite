@@ -126,6 +126,11 @@ class Minecraft_Suite {
 	protected $whitelist_feed;
 
 	/**
+	 * @var MS_Server_Status
+	 */
+	protected $server_status;
+
+	/**
 	 * Creates or returns an instance of this class.
 	 *
 	 * @since  0.1.0
@@ -165,8 +170,8 @@ class Minecraft_Suite {
 		// Attach other plugin classes to the base plugin class.
 		// $this->admin = new MS_Admin( $this );
 
-		$this->cpts = new MS_Cpts( $this->dir( 'includes/cpt_config' ), $this->dir( 'includes/vendor' ) );
-		$this->server_status = new MS_Server_Status( $this );
+		$this->cpts           = new MS_Cpts( $this->dir( 'includes/cpt_config' ), $this->dir( 'includes/vendor' ) );
+		$this->server_status  = new MS_Server_Status( $this );
 		$this->whitelist_feed = new MS_Whitelist_Feed( $this );
 	}
 
@@ -275,8 +280,6 @@ class Minecraft_Suite {
 			),
 			'fields' => 'ids',
 		) );
-
-		error_log( print_r( $post_query, 1 ) );
 
 		$status = false;
 		if ( ! empty( $post_query ) ) {
