@@ -191,8 +191,34 @@ class Minecraft_Suite {
 		add_action( 'wp_ajax_nopriv_minecraft-server-suite', array( $this, 'handle_ajax' ) );
 		add_action( 'wp_ajax_minecraft-server-suite', array( $this, 'handle_ajax' ) );
 
+		add_action( 'admin_menu', array( $this, 'add_pending_apps_menu' ) );
+
 		$this->cpts->hooks();
 		$this->whitelist_feed->hooks();
+	}
+
+	public function add_pending_apps_menu() {
+		global $menu;
+
+		foreach ( $menu as $key => $menu_entry ) {
+			if ( isset( $menu_entry[5] ) && 'menu-posts-mc-applications' == $menu_entry[5] ) {
+				$posts = get_posts( array(
+					'post_type'      => 'mc-applications',
+					'post_status'    => 'pending',
+					'posts_per_page' => - 1,
+					'fields'         => 'ids',
+				) );
+
+				if ( empty( $posts ) ) {
+					return;
+				}
+
+				$post_count = count( $posts );
+
+				$menu[ $key ][0] .= sprintf( ' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>', $post_count );
+				return;
+			}
+		}
 	}
 
 	public function _get_available_servers() {
