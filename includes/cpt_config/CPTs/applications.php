@@ -25,7 +25,7 @@ class MS_Applications extends CPT_Core {
 
 	public function ms_shortcode_output() {
 		ob_start();
-		$this->plugin->views( 'application-form' );
+		minecraft_suite()->views( 'application-form' );
 		return ob_get_clean();
 	}
 }
