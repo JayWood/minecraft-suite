@@ -32,12 +32,10 @@ class MS_Apps {
 		$username = esc_attr( $_POST['ms-username'] );
 		$email = sanitize_email( $_POST['email'] );
 		$reason = wp_kses_post( $_POST['reason'] );
-		$server = esc_attr( $_POST['which-server'] );
+		$server = esc_attr( $_POST['server-id'] );
 
 		if ( ! array_key_exists( $server, $this->_get_available_servers() ) ) {
 			wp_send_json_error( __( 'The specified server does not exist, please select a valid server.', 'ms' ) );
-		} else {
-			$server = $this->_get_available_servers()[ $server ];
 		}
 
 		if ( $age > 100 ) {
@@ -69,9 +67,11 @@ class MS_Apps {
 		), true );
 
 		if ( ! is_wp_error( $insert_results ) && ! empty( $insert_results ) ) {
-			foreach ( array( 'age' => $age, 'mc-username' => $username, 'server' => $server, 'email' => $email ) as $k => $v ) {
+			foreach ( array( 'age' => $age, 'mc-username' => $username, 'email' => $email ) as $k => $v ) {
 				update_post_meta( $insert_results, $k, $v );
 			}
+
+			wp_set_object_terms( $insert_results, intval( $server ), 'server', false );
 
 			wp_send_json_success( __( 'Success! - Your application is now pending approval by a member of the team. You will receive an email when your application has been reviewed along with our decision.', 'ms' ) );
 		}

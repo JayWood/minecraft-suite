@@ -3,8 +3,8 @@
 	<?php wp_nonce_field( 'mcs-nonce' ); ?>
 	<input type="hidden" name="action" value="minecraft-server-suite"/>
 
-	<p><label for="which-server"><?php _e( 'Which server are you applying to?', 'ms' ); ?></label><br />
-	<select name="which-server" id="which-server">
+	<p><label for="server-id"><?php _e( 'Which server are you applying to?', 'ms' ); ?></label><br />
+	<select name="server-id" id="server-id">
 		<option><?php _e( '-- Select A Server --', 'ms' ); ?></option>
 		<?php foreach ( minecraft_suite()->get_servers() as $server_key => $server_name ) : ?>
 			<option value="<?php echo $server_key; ?>"><?php echo $server_name; ?></option>
