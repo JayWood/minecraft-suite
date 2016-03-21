@@ -3,7 +3,7 @@
 * Plugin Name: Minecraft Suite
 * Plugin URI:  http://plugish.com
 * Description: A collection of Minecraft tid-bits, widgets, and scripts that are intended for use on a Minecraft WordPress website.
-* Version:     0.1.0
+* Version:     0.2.0
 * Author:      phyrax
 * Author URI:  http://plugish.com
 * Donate link: http://plugish.com
@@ -192,11 +192,28 @@ class Minecraft_Suite {
 		add_action( 'wp_ajax_minecraft-server-suite', array( $this, 'handle_ajax' ) );
 
 		add_action( 'admin_menu', array( $this, 'add_pending_apps_menu' ) );
+		add_filter( 'gettext', array( $this, 'publish_to_approve' ), 10, 2 );
 
 		$this->cpts->hooks();
 		$this->whitelist_feed->hooks();
 	}
 
+	public function publish_to_approve( $translated_text, $text ) {
+		if ( ! is_admin() || ! function_exists( 'get_current_screen' ) ) {
+			return $translated_text;
+		}
+
+		$screen = get_current_screen();
+		if ( isset( $screen->post_type ) && 'mc-applications' == $screen->post_type && 'Publish' == $text ) {
+			return 'Approve';
+		}
+
+		return $translated_text;
+	}
+
+	/**
+	 * Adds a 'pending' bubble to the applications menu item
+	 */
 	public function add_pending_apps_menu() {
 		global $menu;
 
@@ -221,6 +238,9 @@ class Minecraft_Suite {
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public function _get_available_servers() {
 		return array(
 			'inf-reg'  => 'Infinity Regular',
