@@ -184,7 +184,7 @@ class MS_Server_Status extends WP_Widget {
 		$instance['port']       = ! empty( $new_instance['port'] ) ? absint( $new_instance['port'] ) : '';
 
 		// Flush cache
-		$this->flush_widget_cache();
+//		$this->flush_widget_cache();
 
 		return $instance;
 	}
