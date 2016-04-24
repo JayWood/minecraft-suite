@@ -125,17 +125,38 @@ class Minecraft_Suite {
 	/**
 	 * @var MS_Whitelist_Feed
 	 */
-	protected $whitelist_feed;
+	public $whitelist_feed;
 
 	/**
 	 * @var MS_Server_Status
 	 */
-	protected $server_status;
+	public $server_status;
+
+	/**
+	 * @var MS_Registered_Users
+	 */
+	public $registered_users;
+
+	/**
+	 * Option Prefix
+	 * @var string
+	 */
+	public $option_prefix = 'mcs_';
+
+	/**
+	 * @var MS_Settings
+	 */
+	public $settings;
+
+	/**
+	 * @var string
+	 */
+	public $options_page;
 
 	/**
 	 * @var MS_Apps
 	 */
-	protected $apps;
+	public $apps;
 
 	/**
 	 * Creates or returns an instance of this class.
@@ -176,10 +197,12 @@ class Minecraft_Suite {
 		// Attach other plugin classes to the base plugin class.
 		// $this->admin = new MS_Admin( $this );
 
-		$this->cpts           = new MS_Cpts( $this->dir( 'includes/cpt_config' ), $this->dir( 'includes/vendor' ) );
-		$this->server_status  = new MS_Server_Status( $this );
-		$this->whitelist_feed = new MS_Whitelist_Feed( $this );
-		$this->apps = new MS_Apps( $this );
+		$this->cpts             = new MS_Cpts( $this->dir( 'includes/cpt_config' ), $this->dir( 'includes/vendor' ) );
+		$this->server_status    = new MS_Server_Status( $this );
+		$this->whitelist_feed   = new MS_Whitelist_Feed( $this );
+		$this->apps             = new MS_Apps( $this );
+		$this->registered_users = new MS_Registered_Users( $this );
+		$this->settings         = new MS_Settings( $this );
 	}
 
 	/**
@@ -195,9 +218,59 @@ class Minecraft_Suite {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+
 		$this->cpts->hooks();
 		$this->whitelist_feed->hooks();
 		$this->apps->hooks();
+		$this->registered_users->hooks();
+	}
+
+	public function admin_init() {
+		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'max_users', 'intval' );
+	}
+
+	public function admin_menu() {
+		$this->options_page = add_options_page( __( 'MCS Options', 'minecraft-suite' ), __( 'MCS Options', 'minecraft-suite' ), 'manage_options', 'mcs_options', array( $this, 'render_settings_page' ) );
+
+		add_settings_section( 'mcs-security', __( 'Security', 'minecraft-suite' ), array( $this->settings, 'security_group' ), $this->options_page );
+
+		add_settings_section( 'mcs-registration', __( 'Registration', 'minecraft-suite' ), array( $this->settings, 'registration_group' ), $this->options_page );
+//		add_settings_field( $this->option_prefix . 'max_users', __( 'Max Users', 'minecraft-suite' ), array( $this->settings, 'number_input' ), $this->options_page, 'mcs-registration', array( 'name' => $this->option_prefix . 'max_users', 'desc' => __( 'Maximum Minecraft Accounts that can be tied to a single user. Leave empty for unlimited.', 'minecraft-suite' ) ) );
+
+		foreach ( $this->get_settings_array() as $section => $option ) {
+			foreach ( $option as $option_key => $option_data ) {
+				add_settings_field( $this->option_prefix . $option_key, $option_data['name'], array( $this->settings, $option_data['type'] ), $this->options_page, $section, array( 'name' => $this->option_prefix . $option_key, 'desc' => $option_data['desc'] ) );
+			}
+		}
+
+	}
+
+	public function get_settings_array() {
+		return array(
+			'mcs-registration' => array(
+				'max_users' => array(
+					'type' => 'number_input',
+					'name' => __( 'Max Users', 'minecraft-suite' ),
+					'desc' => __( 'Maximum Minecraft Accounts that can be tied to a single user. Leave empty for unlimited.', 'minecraft-suite' ),
+				),
+			),
+		);
+	}
+
+	public function render_settings_page() {
+		?><div class="wrap">
+			<h2><?php _e( 'Minecraft Suite Options', 'minecraft-suite' ); ?></h2>
+			<form method="post" action="options.php">
+			<?php
+				settings_fields( $this->option_prefix . 'options_group' );
+				do_settings_sections( $this->options_page );
+				submit_button();
+			?>
+			</form>
+		</div><?php
+
 	}
 
 	public function enqueue_scripts() {
