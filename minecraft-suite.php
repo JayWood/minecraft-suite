@@ -234,14 +234,25 @@ class Minecraft_Suite {
 	public function admin_menu() {
 		$this->options_page = add_options_page( __( 'MCS Options', 'minecraft-suite' ), __( 'MCS Options', 'minecraft-suite' ), 'manage_options', 'mcs_options', array( $this, 'render_settings_page' ) );
 
-		add_settings_section( 'mcs-security', __( 'Security', 'minecraft-suite' ), array( $this->settings, 'security_group' ), $this->options_page );
+//		add_settings_section( 'mcs-security', __( 'Security', 'minecraft-suite' ), array( $this->settings, 'security_group' ), $this->options_page );
 
-		add_settings_section( 'mcs-registration', __( 'Registration', 'minecraft-suite' ), array( $this->settings, 'registration_group' ), $this->options_page );
+//		add_settings_section( 'mcs-registration', __( 'Registration', 'minecraft-suite' ), array( $this->settings, 'registration_group' ), $this->options_page );
 //		add_settings_field( $this->option_prefix . 'max_users', __( 'Max Users', 'minecraft-suite' ), array( $this->settings, 'number_input' ), $this->options_page, 'mcs-registration', array( 'name' => $this->option_prefix . 'max_users', 'desc' => __( 'Maximum Minecraft Accounts that can be tied to a single user. Leave empty for unlimited.', 'minecraft-suite' ) ) );
 
-		foreach ( $this->get_settings_array() as $section => $option ) {
-			foreach ( $option as $option_key => $option_data ) {
-				add_settings_field( $this->option_prefix . $option_key, $option_data['name'], array( $this->settings, $option_data['type'] ), $this->options_page, $section, array( 'name' => $this->option_prefix . $option_key, 'desc' => $option_data['desc'] ) );
+		foreach ( $this->get_settings_array() as $section ) {
+
+			add_settings_section( $section['id'], $section['name'], array( $this->settings, $section['group'] ), $this->options_page );
+
+			if ( isset( $section['fields'] ) ) {
+				foreach ( $section['fields'] as $option_key => $option_data ) {
+					add_settings_field( $this->option_prefix . $option_key, $option_data['name'], array(
+						$this->settings,
+						$option_data['type']
+					), $this->options_page, $section['id'], array(
+						'name' => $this->option_prefix . $option_key,
+						'desc' => $option_data['desc']
+					) );
+				}
 			}
 		}
 
@@ -249,11 +260,16 @@ class Minecraft_Suite {
 
 	public function get_settings_array() {
 		return array(
-			'mcs-registration' => array(
-				'max_users' => array(
-					'type' => 'number_input',
-					'name' => __( 'Max Users', 'minecraft-suite' ),
-					'desc' => __( 'Maximum Minecraft Accounts that can be tied to a single user. Leave empty for unlimited.', 'minecraft-suite' ),
+			array(
+				'id' => 'mcs-registration',
+				'name' => __( 'Registration', 'minecraft-suite' ),
+				'group' => 'registration_group',
+				'fields' => array(
+					'max_users' => array(
+						'type' => 'number_input',
+						'name' => __( 'Max Users', 'minecraft-suite' ),
+						'desc' => __( 'Maximum Minecraft Accounts that can be tied to a single user. Leave empty for unlimited.', 'minecraft-suite' ),
+					),
 				),
 			),
 		);

@@ -21,7 +21,7 @@ class MS_Settings {
 	}
 
 	public function registration_group( $args ) {
-//		do_settings_fields( $this->plugin->options_page, 'mcs-registration' );
+	//	do_settings_fields( $this->plugin->options_page, 'mcs-registration' );
 	}
 
 	public function number_input( $args ) {
@@ -32,5 +32,4 @@ class MS_Settings {
 		<?php endif; ?>
 		<?php
 	}
-
 }
