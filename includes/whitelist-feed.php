@@ -28,7 +28,7 @@ class MS_Whitelist_Feed {
 
 		$query_args = array(
 			'post_type'      => 'mc-applications',
-			'post_status'    => 'any',
+			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			'meta_query'     => array(
