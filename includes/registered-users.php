@@ -12,6 +12,7 @@
  * @since NEXT
  */
 class MS_Registered_Users {
+
 	/**
 	 * Parent plugin class
 	 *
@@ -35,9 +36,17 @@ class MS_Registered_Users {
 	 * @return void
 	 */
 	public function hooks() {
+		add_action( 'init', array( $this, 'init' ), 999 );
+	}
 
+	public function init() {
+		if ( get_role( 'mcs_pending_user' ) ) {
+			return;
+		}
 
-
+		$new_role = add_role( 'mcs_pending_user', __( 'Minecraft Pending', 'minecraft-suite' ), array(
+			'read' => true,
+		) );
 	}
 
 	public function get_max_users() {
