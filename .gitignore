@@ -1,3 +1,6 @@
+## Custom plugins ignored for now
+plugins/wmc-top-donators
+
 ### OSX ###
 .DS_Store
 .AppleDouble

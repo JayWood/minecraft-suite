@@ -86,9 +86,8 @@ class MS_Apps {
 		$api = new MulticraftAPI( $this->plugin->get_setting( 'multicraft-url' ), $this->plugin->get_setting( 'multicraft-user' ), $this->plugin->get_setting( 'multicraft-key' ) );
 		$whitelist_command = apply_filters( 'mcs_whitelist_command', 'whitelist add %s' );
 		if ( is_callable( array( $api, 'sendConsoleCommand' ) ) ) {
-
-			error_log( print_r( '=== COMMAND SENT ===', 1 ) );
-			//$api->sendConsoleCommand( $server, sprintf( $whitelist_command, $username ) );
+			$api->sendConsoleCommand( $server_id, sprintf( $whitelist_command, $username ) );
+			$api->sendConsoleCommand( $server_id, sprintf( 'say ' . $this->plugin->get_setting( 'multicraft-whitelist-announce', 'A new user {%s} has been white-listed' ), $username ) );
 		}
 	}
 
@@ -97,11 +96,11 @@ class MS_Apps {
 			wp_send_json_error( __( 'Internal Server Error', 'minecraft-suite' ) );
 		}
 
-		$age = absint( $_POST['age'] );
+		$age      = absint( $_POST['age'] );
 		$username = esc_attr( $_POST['ms-username'] );
-		$email = sanitize_email( $_POST['email'] );
-		$reason = wp_kses_post( $_POST['reason'] );
-		$server = esc_attr( $_POST['server-id'] );
+		$email    = sanitize_email( $_POST['email'] );
+		$reason   = wp_kses_post( $_POST['reason'] );
+		$server   = esc_attr( $_POST['server-id'] );
 
 		if ( ! array_key_exists( $server, $this->_get_available_servers() ) ) {
 			wp_send_json_error( __( 'The specified server does not exist, please select a valid server.', 'minecraft-suite' ) );
@@ -112,7 +111,7 @@ class MS_Apps {
 		}
 
 		if ( $age < $this->get_minimum_age() ) {
-			wp_send_json_error( __( 'You do not meet the minimum age requirements to play on this server.', 'minecraft-suite' ) );
+			wp_send_json_error( sprintf( __( 'You do not meet the minimum age requirements of %d years old to play on this server.', 'minecraft-suite' ), $this->get_minimum_age() ) );
 		}
 
 		if ( empty( $email ) ) {
@@ -162,7 +161,7 @@ class MS_Apps {
 	}
 
 	public function get_minimum_age() {
-		return 12;
+		return apply_filters( 'mcs_minimum_age', 12 );
 	}
 
 	/**

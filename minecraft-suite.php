@@ -234,6 +234,8 @@ class Minecraft_Suite {
 		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-key', 'esc_attr' );
 		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-url', 'esc_url' );
 		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-user', 'esc_attr' );
+		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-whitelist-announce', 'esc_attr' );
+
 	}
 
 	public function admin_menu() {
@@ -313,6 +315,12 @@ class Minecraft_Suite {
 						'name' => __( 'Multicraft User', 'minecraft-suite' ),
 						'desc' => '',
 					),
+					array(
+						'id'   => 'multicraft-whitelist-announce',
+						'type' => 'input_textbox',
+						'name' => __( 'Whitelist Announcement Text', 'minecraft-suite' ),
+						'desc' => __( 'To use the players name, use %s instead.', 'minecraft-suite' ),
+					)
 				),
 			),
 		);
