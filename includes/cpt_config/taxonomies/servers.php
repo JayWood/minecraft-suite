@@ -14,8 +14,8 @@ class MS_Servers extends Taxonomy_Core {
 			add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'edit_form_fields' ) );
 			add_action( $this->taxonomy . '_add_form_fields', array( $this, 'add_form_fields' ) );
 
-			add_action( 'created_' . $this->taxonomy, array( $this, 'save_term_meta' ), 10, 2 );
-			add_action( 'edited_' . $this->taxonomy, array( $this, 'save_term_meta' ), 10, 2 );
+			add_action( 'created_' . $this->taxonomy, array( $this, 'save_term_meta' ) );
+			add_action( 'edited_' . $this->taxonomy, array( $this, 'save_term_meta' ) );
 
 			add_filter( 'manage_edit-' . $this->taxonomy . '_columns', array( $this, 'tax_columns' ) );
 			add_filter( 'manage_' . $this->taxonomy . '_custom_column', array( $this, 'tax_col_content' ), 10, 3 );
@@ -25,6 +25,9 @@ class MS_Servers extends Taxonomy_Core {
 	public function tax_col_content( $content, $col_name, $term_id ) {
 		if ( 'server_id' == $col_name ) {
 			$server_id = get_term_meta( $term_id, 'server_id', true );
+			if ( empty( $server_id ) ) {
+				return sprintf( '<span style="color: red;">%s</span>', __( 'NONE', 'minecraft-suite' ) );
+			}
 
 			return absint( $server_id );
 		}
@@ -39,7 +42,7 @@ class MS_Servers extends Taxonomy_Core {
 		return $cols;
 	}
 
-	public function save_term_meta( $term_id, $tag_id ) {
+	public function save_term_meta( $term_id ) {
 		if ( isset( $_POST['server_id'] ) ) {
 			update_term_meta( $term_id, 'server_id', absint( $_POST['server_id'] ) );
 		}
