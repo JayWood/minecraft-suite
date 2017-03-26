@@ -230,6 +230,10 @@ class Minecraft_Suite {
 	public function admin_init() {
 		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'max-users', 'intval' );
 		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'email-body', 'esc_attr' );
+		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-api', 'esc_attr' );
+		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-key', 'esc_attr' );
+		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-url', 'esc_url' );
+		register_setting( $this->option_prefix . 'options_group', $this->option_prefix . 'multicraft-user', 'esc_attr' );
 	}
 
 	public function admin_menu() {
@@ -246,6 +250,10 @@ class Minecraft_Suite {
 			}
 		}
 
+	}
+
+	public function get_setting( $name, $default = false ) {
+		return get_option( $this->option_prefix . $name, $default );
 	}
 
 	public function get_settings_array() {
@@ -276,7 +284,42 @@ class Minecraft_Suite {
 					),
 				),
 			),
+			array(
+				'id'     => 'mcs-multicraft',
+				'name'   => __( 'Multicraft Settings', 'minecraft-suite' ),
+				'group'  => 'default_group',
+				'fields' => array(
+					array(
+						'id'   => 'multicraft-api',
+						'type' => 'input_checkbox',
+						'name' => __( 'Use Multicraft API', 'minecraft-suite' ),
+						'desc' => __( 'Tick this box to enable the multicraft API for adding/removing users.' ),
+					),
+					array(
+						'id'   => 'multicraft-key',
+						'type' => 'input_textbox',
+						'name' => __( 'Multicraft Key', 'minecraft-suite' ),
+						'desc' => '',
+					),
+					array(
+						'id'   => 'multicraft-url',
+						'type' => 'input_textbox',
+						'name' => __( 'Multicraft URL', 'minecraft-suite' ),
+						'desc' => '',
+					),
+					array(
+						'id'   => 'multicraft-user',
+						'type' => 'input_textbox',
+						'name' => __( 'Multicraft User', 'minecraft-suite' ),
+						'desc' => '',
+					),
+				),
+			),
 		);
+	}
+
+	public function is_multicraft_enabled() {
+		return ! empty( get_option( 'mcs_multicraft-api' ) );
 	}
 
 	public function render_settings_page() {

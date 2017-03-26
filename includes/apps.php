@@ -22,6 +22,7 @@ class MS_Apps {
 		add_action( 'admin_menu', array( $this, 'add_pending_apps_menu' ) );
 		add_filter( 'gettext', array( $this, 'publish_to_approve' ), 10, 2 );
 		add_action( 'publish_mc-applications', array( $this, 'send_approved_email' ), 10, 2 );
+		add_action( 'admin_init', array( $this, 'maybe_check_api' ) );
 	}
 
 	/**
@@ -47,7 +48,34 @@ class MS_Apps {
 		$message = get_option( 'mcs_email-body', '' );
 		$headers[] = '';
 
+		if ( $this->plugin->is_multicraft_enabled() ) {
+			$this->white_list_user( $username );
+		}
+
 		wp_mail( $to, $subject, $message );
+	}
+
+	public function maybe_check_api() {
+		if ( ! isset( $_GET['test_api'] ) ){
+			return;
+		}
+
+		$this->white_list_user( '' );
+	}
+
+	public function white_list_user( $username, $server = 0 ) {
+		$server = absint( $server );
+		if ( empty( $server ) ) {
+			return;
+		}
+
+		Minecraft_Suite::include_file( 'vendor/MulticraftAPI' );
+
+		$api = new MulticraftAPI( $this->plugin->get_setting( 'multicraft-url' ), $this->plugin->get_setting( 'multicraft-user' ), $this->plugin->get_setting( 'multicraft-key' ) );
+		$whitelist_command = apply_filters( 'mcs_whitelist_command', 'whitelist add %s' );
+		if ( is_callable( array( $api, 'sendConsoleCommand' ) ) ) {
+			$api->sendConsoleCommand( $server, sprintf( $whitelist_command, $username ) );
+		}
 	}
 
 	public function handle_ajax() {
